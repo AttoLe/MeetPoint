@@ -1,0 +1,19 @@
+services:
+  meetpoint.api:
+    container_name: meetpoint.api
+    build:
+      context: .
+      dockerfile: docker/dev.Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ./src:/app/src
+    networks:
+      - meetpoint-network
+
+
+networks:
+  meetpoint-network:
+    driver: bridge
