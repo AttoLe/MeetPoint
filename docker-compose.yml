@@ -8,11 +8,13 @@ services:
       - "5000:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    volumes:
-      - ./src:/app/src
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
     networks:
       - meetpoint-network
-
 
 networks:
   meetpoint-network:
