@@ -13,9 +13,9 @@ public partial class User
         set
         {
             if (value != null && !value.All(char.IsLetter))
-                throw new ArgumentException("Name includes only letters.");
+                throw new ArgumentException($"{nameof(Name)} includes only letters.");
             if (value != null && value.Length > 15)
-                throw new ArgumentException("Name cannot be longer than 15 letters.");
+                throw new ArgumentException($"{nameof(Name)} cannot be longer than 15 letters.");
             _name = value;
         }
     }
@@ -27,9 +27,9 @@ public partial class User
         set
         {
             if (value != null && !value.All(char.IsLetter))
-                throw new ArgumentException("Surname includes only letters.");
+                throw new ArgumentException($"{nameof(Surname)} includes only letters.");
             if (value != null && value.Length > 15)
-                throw new ArgumentException("Surname cannot be longer than 15 letters.");
+                throw new ArgumentException($"{nameof(Surname)} cannot be longer than 15 letters.");
             _surname = value;
         }
     }
@@ -43,7 +43,7 @@ public partial class User
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentNullException(nameof(Username));
             if (value.Length is <= 3 or > 15)
-                throw new ArgumentException("Username length must be between 3 and 15 characters.");
+                throw new ArgumentException($"{nameof(Username)} length must be between 3 and 15 characters.");
             _username = value;
         }
     }
@@ -55,7 +55,7 @@ public partial class User
         set
         {
             if (value != null && value.Length > 10)
-                throw new ArgumentException("Alias cannot be longer than 10 characters.");
+                throw new ArgumentException($"{nameof(Alias)} cannot be longer than 10 characters.");
             _alias = value;
         }
     }
@@ -69,7 +69,7 @@ public partial class User
             if (value == null)
                 throw new ArgumentNullException(nameof(Email));
             if (!EmailRegex().IsMatch(value))
-                throw new FormatException("Email must be in a valid format.");
+                throw new FormatException($"{nameof(Email)} must be in a valid format.");
             _email = value;
         }
     }
@@ -88,7 +88,7 @@ public partial class User
         set
         {
             if (value != null && !PhoneNumberRegex().IsMatch(value))
-                throw new FormatException("Phone number must be in a valid international format.");
+                throw new FormatException($"{nameof(PhoneNumber)} number must be in a valid international format.");
             _phoneNumber = value;
         }
     }

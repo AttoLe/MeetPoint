@@ -1,21 +1,48 @@
 services:
-  meetpoint.api:
-    container_name: meetpoint.api
-    build:
-      context: .
-      dockerfile: docker/dev.Dockerfile
-    ports:
-      - "5000:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    develop:
-      watch:
-        - action: sync
-          path: ./src
-          target: /app/src
-    networks:
-      - meetpoint-network
+    meetpoint.api:
+        container_name: meetpoint.api
+        build:
+            context: .
+            dockerfile: docker/dev.Dockerfile
+        expose:
+            - "8080"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+        develop:
+            watch:
+                - action: sync
+                  path: ./src
+                  target: /app/src
+        networks:
+            - meetpoint-network
+
+    db:
+        image: postgres
+        container_name: meetpoint.db
+        environment:
+            POSTGRES_PASSWORD: meetpass
+            POSTGRES_DB: meetpoint
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        restart: unless-stopped
+
+    nginx:
+        build:
+            context: docker
+            dockerfile: nginx.Dockerfile
+        networks:
+            - meetpoint-network
+        ports:
+            - "5000:80"
+        develop:
+            watch:
+                - action: sync+restart
+                  path: ./nginx.conf
+                  target: /etc/nginx/nginx.conf
 
 networks:
-  meetpoint-network:
-    driver: bridge
+    meetpoint-network:
+        driver: bridge
+
+volumes:
+    pgdata:

@@ -1,6 +1,6 @@
 namespace MeetPoint.Domain.Enums;
 
-public enum VehicleTypes
+public enum VehicleType
 {
 	Car,
 	Bus,

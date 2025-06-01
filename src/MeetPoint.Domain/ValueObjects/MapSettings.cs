@@ -2,27 +2,22 @@ namespace MeetPoint.Domain.ValueObjects;
 
 public readonly record struct MapSettings(MapSettings.Participants ParticipantsSettings, bool ViewGeoCenter)
 {
+	public static readonly MapSettings Default = new(
+		new Participants(true, new Participants.Details(true, true, true)), true);
+
 	public record Participants
 	{
 		public bool Enabled { get; set; }
 
-		private readonly Details _settings = new(false, false, false);
-		public Details? Settings
-		{
-			get => Enabled ? _settings : null;
-			init => _settings = value ?? Details.Enabled;
-		}
+		private readonly Details _settings;
+		public Details? Settings => Enabled ? _settings : null;
 
-		public Participants(bool enabled = true, Details? settings = null)
+		public Participants(bool enabled, Details settings)
 		{
 			Enabled = enabled;
-			Settings = settings;
+			_settings = settings;
 		}
 
-		public readonly record struct Details(bool ViewDistance, bool ViewUpdatedTime, bool ViewIcons)
-		{
-			public static readonly Details Enabled = new(true, true, true);
-
-		}
+		public readonly record struct Details(bool ViewDistance, bool ViewUpdatedTime, bool ViewIcons);
 	}
 }

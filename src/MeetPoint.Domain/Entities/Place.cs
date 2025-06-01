@@ -16,7 +16,7 @@ public class Place
 			if (string.IsNullOrWhiteSpace(value))
 				throw new ArgumentNullException(nameof(Name));
 			if (value.Length < 3 || value.Length > 25)
-				throw new ArgumentException("Name length must be between 3 and 25 characters.");
+				throw new ArgumentException($"{nameof(Name)} length must be between 3 and 25 characters.");
 
 			_name = value;
 			LastUpdated = DateTime.Now;
@@ -41,6 +41,8 @@ public class Place
 			LastUpdated = DateTime.UtcNow;
 		}
 	}
+
+	public Coordinates Coordinates { get; private set; }
 
 	public string? Link { get; private set; }
 
@@ -82,12 +84,13 @@ public class Place
 	private DateTime LastUpdated { get; set; }
 	private static readonly TimeSpan UpdateThreshold = TimeSpan.FromDays(3);
 
-	public Place(string name, PlaceType placeType, string address, WeeklySchedule weeklySchedule, string? link)
+	public Place(string name, PlaceType placeType, string address, Coordinates? coordinates, WeeklySchedule weeklySchedule, string? link)
 	{
 		Id = Guid.NewGuid();
 		Name = name;
 		Type = placeType;
 		Address = address;
+		Coordinates = coordinates ?? new Coordinates();
 		WeeklySchedule = weeklySchedule;
 		Link = link;
 		LastUpdated = DateTime.UtcNow;
