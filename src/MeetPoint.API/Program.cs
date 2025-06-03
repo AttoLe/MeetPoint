@@ -1,26 +1,48 @@
-using MeetPoint.Infrastructure.Identity;
+using MeetPoint.API;
+using MeetPoint.Application.Interfaces;
+using MeetPoint.Infrastructure.Persistence;
+using MeetPoint.Infrastructure.Persistence.Entities;
+using MeetPoint.Infrastructure.Services;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddIdentityValidation()
-    .AddJwtAuth(builder.Configuration)
-    .AddOpenApi();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
 
+builder.Services
+    .AddBasicIdentity()
+    .AddIdentityValidation()
+    .AddAuth();
+
+builder.Services
+    .AddScoped<IFriendsService<string, IdentityUser>, FriendService>()
+    .AddScoped<IFriendInvitationsService<string>, FriendInvitationService>();
+
+builder.Services.AddLocalSwaggerGen();
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.AddSwaggerUI();
+    app.DbContextEnsureCreation();
 }
 
-app.UseCors(x => x.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials());
+app.UseCors(x => x.AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials());
 
-app.MapControllers();
 app.UseHttpsRedirection();
+app.UseRouting();
+
+app.MapGroup("/api/account/").MapIdentityApi<IdentityUser>();
+app.MapControllers();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

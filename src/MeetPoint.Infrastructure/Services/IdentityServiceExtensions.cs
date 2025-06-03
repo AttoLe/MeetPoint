@@ -1,20 +1,28 @@
 using System.Text;
 
+using MeetPoint.Application.Interfaces;
+using MeetPoint.Infrastructure.Persistence;
+using MeetPoint.Infrastructure.Validators;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MeetPoint.Infrastructure.Identity;
+namespace MeetPoint.Infrastructure.Services;
 
 public static class IdentityServiceExtensions
 {
 
-    // public static IServiceCollection Add(this IServiceCollection services)
-    // {
+    public static IServiceCollection AddBasicIdentity(this IServiceCollection services)
+    {
+        services.AddIdentityApiEndpoints<IdentityUser>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
 
-    // }
+        return services;
+    }
 
     public static IServiceCollection AddIdentityValidation(this IServiceCollection services)
     {
@@ -27,12 +35,24 @@ public static class IdentityServiceExtensions
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
 
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedAccount = false;
+
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
                 options.User.RequireUniqueEmail = false;
             });
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuth(this IServiceCollection services)
+    {
+        services.AddAuthentication();
+        services.AddAuthorization();
 
         return services;
     }
@@ -61,6 +81,8 @@ public static class IdentityServiceExtensions
         });
 
         services.AddAuthorization();
+        services.AddScoped<IJwtTokenGenerator<IdentityUser>, JwtTokenGenerator>();
+
         return services;
     }
 }

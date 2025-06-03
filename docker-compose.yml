@@ -6,6 +6,8 @@ services:
             dockerfile: docker/dev.Dockerfile
         expose:
             - "8080"
+        ports:
+            - "5001:8080"
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
         develop:
@@ -25,6 +27,8 @@ services:
         volumes:
             - pgdata:/var/lib/postgresql/data
         restart: unless-stopped
+        networks:
+            - meetpoint-network
 
     nginx:
         build:
@@ -37,8 +41,22 @@ services:
         develop:
             watch:
                 - action: sync+restart
-                  path: ./nginx.conf
+                  path: ./docker/nginx.conf
                   target: /etc/nginx/nginx.conf
+
+    meetpoint.web:
+        build:
+            context: ./src/MeetPoint.Frontend
+            dockerfile: dev.Dockerfile
+        expose:
+            - "3000"
+        networks:
+            - meetpoint-network #change later
+        develop:
+            watch:
+                - action: sync
+                  path: ./src/MeetPoint.Frontend
+                  target: /app
 
 networks:
     meetpoint-network:
