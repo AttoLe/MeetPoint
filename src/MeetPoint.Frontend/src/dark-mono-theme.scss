@@ -1,0 +1,21 @@
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+$dark-mono-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: mat.define-palette(mat.$grey-palette),
+      secondary: mat.define-palette(mat.$grey-palette),
+      tertiary: mat.define-palette(mat.$grey-palette),
+      neutral: mat.define-palette(mat.$grey-palette),
+      neutral-variant: mat.define-palette(mat.$grey-palette),
+    ),
+    typography: mat.define-typography-config(),
+    // optional
+    density: 0,
+  )
+);
+
+@include mat.all-component-themes($dark-mono-theme);
