@@ -25,9 +25,19 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
               }
             ],
-            "styles": ["src/styles/dark.scss", "src/styles/styles.scss"]
+            "styles": [
+              "src/styles/styles.scss",
+              "src/styles/dark-theme.scss",
+              "src/styles/light-theme.scss",
+              "src/styles/typography-theme.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -79,10 +89,13 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles/dark.scss", "src/styles/styles.scss"]
+            "styles": ["src/styles/light-theme.scss"]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

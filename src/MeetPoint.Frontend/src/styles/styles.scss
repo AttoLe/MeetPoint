@@ -1,13 +1,164 @@
-/* You can add global styles to this file, and also import other style files */
-
 @use "@angular/material" as mat;
-@import "./dark.scss";
 
-/*html,
-body {
-  height: 100%;
+@include mat.core();
+
+:root {
+  --mat-sys-corner-none: 0;
+  --mat-sys-corner-extra-small: 4px;
+  --mat-sys-corner-small: 8px;
+  --mat-sys-corner-medium: 12px;
+  --mat-sys-corner-large: 16px;
+  --mat-sys-corner-extra-large: 28px;
+  --mat-sys-corner-full: 9999px;
+
+  --mat-sys-corner-large-start: 16px 0 0 16px;
+  --mat-sys-corner-large-end: 0 16px 16px 0;
+  --mat-sys-corner-large-top: 16px 16px 0 0;
+  --mat-sys-corner-extra-large-top: 28px 28px 0 0;
 }
-body {
+
+body,
+html {
+  background-color: var(--mat-sys-background) !important;
+  color: var(--mat-sys-on-background) !important;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  padding: 0;
+}
+
+/** {
+  outline: 1px solid red !important;
 }*/
+
+/* Headings use brand font and bold weight */
+
+h1 {
+  font-family: var(--mat-sys-display-large-font);
+  font-weight: var(--mat-sys-display-large-weight);
+  font-size: var(--mat-sys-display-large-size);
+  line-height: var(--mat-sys-display-large-line-height);
+  letter-spacing: var(--mat-sys-display-large-tracking);
+  color: var(--mat-sys-on-background);
+  margin: 0;
+}
+
+h2 {
+  font-family: var(--mat-sys-display-medium-font);
+  font-weight: var(--mat-sys-display-medium-weight);
+  font-size: var(--mat-sys-display-medium-size);
+  line-height: var(--mat-sys-display-medium-line-height);
+  letter-spacing: var(--mat-sys-display-medium-tracking);
+  color: var(--mat-sys-on-background);
+  margin: 0;
+}
+
+h3 {
+  font-family: var(--mat-sys-display-small-font);
+  font-weight: var(--mat-sys-display-small-weight);
+  font-size: var(--mat-sys-display-small-size);
+  line-height: var(--mat-sys-display-small-line-height);
+  letter-spacing: var(--mat-sys-display-small-tracking);
+  color: var(--mat-sys-on-background);
+  margin: 0;
+}
+
+label {
+  font-family: var(--mat-sys-label-large-font);
+  font-weight: var(--mat-sys-label-large-weight);
+  font-size: var(--mat-sys-label-large-size);
+  line-height: var(--mat-sys-label-large-line-height);
+  letter-spacing: var(--mat-sys-label-large-tracking);
+  color: var(--mat-sys-on-background);
+}
+
+p {
+  font-family: var(--mat-sys-body-large-font);
+  font-weight: var(--mat-sys-body-large-weight);
+  font-size: var(--mat-sys-body-large-size);
+  line-height: var(--mat-sys-body-large-line-height);
+  letter-spacing: var(--mat-sys-body-large-tracking);
+  color: var(--mat-sys-on-background);
+}
+
+small {
+  font-family: var(--mat-sys-body-small-font);
+  font-weight: var(--mat-sys-body-small-weight);
+  font-size: var(--mat-sys-body-small-size);
+  line-height: var(--mat-sys-body-small-line-height);
+  letter-spacing: var(--mat-sys-body-small-tracking);
+  color: var(--mat-sys-on-background);
+}
+
+/* Links */
+a {
+  color: var(--mat-sys-primary);
+  font-weight: var(--mat-sys-medium-font-weight);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  color: var(--mat-sys-primary-container);
+}
+
+/* Buttons */
+/*button {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}*/
+
+/*button:hover,
+button:focus {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}*/
+
+/* Inputs and form fields */
+input,
+textarea,
+select {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  border: 1px solid var(--mat-sys-outline);
+  padding: 0.5rem;
+  border-radius: 4px;
+  outline-offset: 2px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--mat-sys-primary);
+  box-shadow: 0 0 0 2px var(--mat-sys-primary-container);
+  outline: none;
+}
+
+.cdk-overlay-backdrop {
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.3); /* semi-transparent */
+}
+
+.section {
+  outline: 1px solid var(--mat-sys-outline);
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.header-split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.clickable:hover {
+  color: var(--mat-sys-primary);
+}
