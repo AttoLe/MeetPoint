@@ -8,9 +8,8 @@ describe('SessionRoutingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionRoutingsComponent]
-    })
-    .compileComponents();
+      imports: [SessionRoutingsComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SessionRoutingsComponent);
     component = fixture.componentInstance;

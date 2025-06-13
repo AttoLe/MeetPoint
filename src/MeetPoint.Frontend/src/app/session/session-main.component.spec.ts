@@ -1,18 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SessionNavComponent } from './session-nav.component';
+import { SessionMainComponent } from './session-main.component';
 
 describe('SessionNavComponent', () => {
-  let component: SessionNavComponent;
-  let fixture: ComponentFixture<SessionNavComponent>;
+  let component: SessionMainComponent;
+  let fixture: ComponentFixture<SessionMainComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionNavComponent]
-    })
-    .compileComponents();
+      imports: [SessionMainComponent],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(SessionNavComponent);
+    fixture = TestBed.createComponent(SessionMainComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

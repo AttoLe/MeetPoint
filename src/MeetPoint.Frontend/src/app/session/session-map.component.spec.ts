@@ -8,9 +8,8 @@ describe('SessionMapComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionMapComponent]
-    })
-    .compileComponents();
+      imports: [SessionMapComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SessionMapComponent);
     component = fixture.componentInstance;

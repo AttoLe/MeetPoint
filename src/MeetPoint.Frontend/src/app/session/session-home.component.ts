@@ -7,9 +7,9 @@ import { NgComponentOutlet } from '@angular/common';
 import { Component, Type } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { SessionMapComponent } from '../session-map.component/session-map.component';
-import { SessionParticipantsComponent } from '../session-participants.component/session-participants.component';
-import { SessionRoutingsComponent } from '../session-routings.component/session-routings.component';
+import { SessionMapComponent } from './session-map.component';
+import { SessionParticipantsComponent } from './session-participants.component';
+import { SessionRoutingsComponent } from './session-routings.component';
 
 @Component({
   imports: [MatCard, MatIconModule, DragDropModule, NgComponentOutlet],
@@ -39,7 +39,7 @@ import { SessionRoutingsComponent } from '../session-routings.component/session-
   styles: `
 
   .section{
-    padding: 50px;
+    padding: 25px;
   }
 
   .placeholder{

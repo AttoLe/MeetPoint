@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-session-main.component',
@@ -49,11 +49,6 @@ import { RouterModule } from '@angular/router';
     height: 80%;
     width: 10vw;
     margin: 5vh auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    content-justify: center;
-    justify-content: flex-start
   }
 
   .nav-list{
@@ -99,21 +94,15 @@ import { RouterModule } from '@angular/router';
     margin: 4px auto;
   }
 
-  .icon-wrapper {
-    font-size: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
-
   .page-content {
     margin: 4vh 10vh 0 4vh;
   }
   `,
 })
 export class SessionMainComponent {
+  private _route = inject(ActivatedRoute);
+  token = this._route.snapshot.paramMap.get('token');
+
   navItems: NavItem[] = [
     { index: 0, icon: 'home', label: 'Home', link: 'home' },
     { index: 1, icon: 'stars', label: 'Mode', link: 'path' },
