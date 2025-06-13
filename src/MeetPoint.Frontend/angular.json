@@ -32,12 +32,7 @@
                 "output": "/assets"
               }
             ],
-            "styles": [
-              "src/styles/styles.scss",
-              "src/styles/dark-theme.scss",
-              "src/styles/light-theme.scss",
-              "src/styles/typography-theme.scss"
-            ]
+            "styles": ["src/styles/styles.scss"]
           },
           "configurations": {
             "production": {
