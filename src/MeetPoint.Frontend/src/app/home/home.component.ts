@@ -5,29 +5,31 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { Router } from '@angular/router';
 import { CreateSessionDialog } from './create-session-dialog.component';
 import { JoinSessionDialog } from './join-session-dialog.component';
-import { TileConfig } from './tile-config.interface';
+
+interface TileConfig {
+  span: number;
+  title: string;
+  desc?: string;
+  onClick: () => void;
+}
 
 @Component({
   selector: 'app-home.component',
   imports: [MatCardModule, MatGridListModule],
-  template: `<div>
-    <div>
-      <mat-grid-list [cols]="totalCols()" rowHeight="25vh">
-        @for (tile of tileConfigs(); track tile) {
-        <mat-grid-tile [colspan]="tile.span" (click)="tile.onClick()">
-          <mat-card class="card-section">
-            <mat-card-content>
-              <mat-card-title>
-                <h2>{{ tile.title }}</h2>
-              </mat-card-title>
-              <mat-card-subtitle> {{ tile.desc }} </mat-card-subtitle>
-            </mat-card-content>
-          </mat-card>
-        </mat-grid-tile>
-        }
-      </mat-grid-list>
-    </div>
-  </div>`,
+  template: ` <mat-grid-list [cols]="totalCols()" rowHeight="25vh">
+    @for (tile of tileConfigs(); track tile) {
+    <mat-grid-tile [colspan]="tile.span" (click)="tile.onClick()">
+      <mat-card class="card-section" style="margin: 10px">
+        <mat-card-content>
+          <mat-card-title>
+            <h2>{{ tile.title }}</h2>
+          </mat-card-title>
+          <mat-card-subtitle> {{ tile.desc }} </mat-card-subtitle>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    }
+  </mat-grid-list>`,
   styles: `
 
     .mat-grid-list{
