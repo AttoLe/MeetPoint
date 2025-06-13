@@ -3,54 +3,49 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Router } from '@angular/router';
-import { CreateSessionComponent } from '../create-session.component/create-session.component';
-import { JoinSessionComponent } from '../join-session.component/join-session.component';
-import { TileConfig } from './TileConfig';
+import { CreateSessionDialog } from './create-session-dialog.component';
+import { JoinSessionDialog } from './join-session-dialog.component';
+import { TileConfig } from './tile-config.interface';
 
 @Component({
   selector: 'app-home.component',
   imports: [MatCardModule, MatGridListModule],
-  template: `<div class="container">
-    <mat-grid-list
-      [cols]="totalCols()"
-      rowHeight="25vh"
-      style="width: 80%; margin:  30vh auto 0 auto;"
-      gutterSize="5px"
-    >
-      @for (tile of tileConfigs(); track tile) {
-      <mat-grid-tile [colspan]="tile.span" (click)="tile.onClick()">
-        <mat-card class="section">
-          <mat-card-footer style="height: 40%; padding: 0 1rem;">
-            <mat-card-title>
-              <h3>{{ tile.title }}</h3>
-            </mat-card-title>
-            <mat-card-subtitle>{{ tile.desc }}</mat-card-subtitle>
-          </mat-card-footer>
-        </mat-card>
-      </mat-grid-tile>
-      }
-    </mat-grid-list>
+  template: `<div>
+    <div>
+      <mat-grid-list [cols]="totalCols()" rowHeight="25vh">
+        @for (tile of tileConfigs(); track tile) {
+        <mat-grid-tile [colspan]="tile.span" (click)="tile.onClick()">
+          <mat-card class="card-section">
+            <mat-card-content>
+              <mat-card-title>
+                <h2>{{ tile.title }}</h2>
+              </mat-card-title>
+              <mat-card-subtitle> {{ tile.desc }} </mat-card-subtitle>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+        }
+      </mat-grid-list>
+    </div>
   </div>`,
   styles: `
 
-    .container {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+    .mat-grid-list{
+      width: 80vw;
+      margin:  30vh auto;
     }
 
-    .section{
-      width: calc(100% - 20px);
-      height: calc(100% - 20px);
-      justify-content:flex-end
-    }
-
-    .mat-grid-tile {
+    .mat-grid-tile{
       transition: transform 0.5s ease;
+      &:hover {
+        transform: scale(1.05);
+      }
     }
 
-    .mat-grid-tile:hover {
-        transform: scale(1.05);
+    .mat-mdc-card-content{
+      margin-top: auto;
+      min-height: 40%;
+      justify-content: flex-end
     }`,
 })
 export class HomeComponent {
@@ -63,9 +58,9 @@ export class HomeComponent {
       title: 'Create session',
       desc: 'Create session as an owner',
       onClick: () =>
-        this._dialog.open(CreateSessionComponent, {
+        this._dialog.open(CreateSessionDialog, {
           width: '300px',
-          height: '450px',
+          panelClass: 'dialog',
           autoFocus: 'dialog',
         }),
     },
@@ -74,9 +69,9 @@ export class HomeComponent {
       title: 'Join session',
       desc: 'Join existing session as a participant',
       onClick: () =>
-        this._dialog.open(JoinSessionComponent, {
+        this._dialog.open(JoinSessionDialog, {
           width: '300px',
-          height: '350px',
+          panelClass: 'dialog',
           autoFocus: 'dialog',
         }),
     },
