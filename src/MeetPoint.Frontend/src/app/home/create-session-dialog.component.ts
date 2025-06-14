@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { TimeFrequency } from '../shared/time-frequency.component';
+import { TimeFrequency } from './shared/time-frequency.component';
 
 @Component({
   selector: 'app-create-session-dialog.component',

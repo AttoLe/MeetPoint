@@ -10,7 +10,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { TimeFrequency } from '../shared/time-frequency.component';
+import { TimeFrequency } from './shared/time-frequency.component';
 
 @Component({
   imports: [
@@ -77,8 +77,9 @@ export class JoinSessionDialog {
 
   join(): void {
     //join session, hub with service and signalr
-    this._router.navigate([`/session`, this.form.value.token]);
+
     this._dialogRef.close(/*data??*/);
+    this._router.navigate([`/session`, this.form.value.token]);
   }
 }
 
