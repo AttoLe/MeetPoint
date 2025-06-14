@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SessionMapComponent } from './session-map.component';
+import { SessionMapSectionComponent } from './session-map-section.component';
 
 describe('SessionMapComponent', () => {
-  let component: SessionMapComponent;
-  let fixture: ComponentFixture<SessionMapComponent>;
+  let component: SessionMapSectionComponent;
+  let fixture: ComponentFixture<SessionMapSectionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionMapComponent],
+      imports: [SessionMapSectionComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SessionMapComponent);
+    fixture = TestBed.createComponent(SessionMapSectionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { SectionHeaderComponent } from '../shared/section-header.component';
+
+interface Participant {
+  id: number;
+  username: string;
+  color: string;
+}
 
 @Component({
-  selector: 'app-session-participants.component',
-  imports: [MatIconModule],
-  template: `<div style="height: 100%; width: 100%">
-    <div class="header-split" style="padding-bottom: 10px">
-      <div style="display: flex; gap: 0.75rem;">
-        <h3 class="clickable" style="font-size: 20px; margin: 0 !important">
-          Participants
-        </h3>
-        <mat-icon class="clickable" style="margin: auto">
-          arrow_forward
-        </mat-icon>
-      </div>
-      <mat-icon class="clickable"> list </mat-icon>
-    </div>
+  selector: 'app-session-participants-section.component',
+  imports: [MatIconModule, SectionHeaderComponent],
+  template: ` <div style="height: 100%; width: 100%">
+    <app-section-header
+      title="Participants"
+      (onClick)="openSessionParticipantPage()"
+    />
     <div class="carousele">
       @for (participant of Participants; track participant){
       <div class="person-container" (onClick)="openProfile()">
@@ -64,7 +64,7 @@ import { MatIconModule } from '@angular/material/icon';
       height: 200px;
   }`,
 })
-export class SessionParticipantsComponent {
+export class SessionParticipantsSectionComponent {
   Participants: Participant[] = [
     { id: 0, username: 'test1', color: 'yellow' },
     { id: 1, username: 'test2', color: 'red' },
@@ -76,10 +76,8 @@ export class SessionParticipantsComponent {
   openProfile(): void {
     //open person profile popup
   }
-}
 
-export interface Participant {
-  id: number;
-  username: string;
-  color: string;
+  openSessionParticipantPage(): void {
+    //router
+  }
 }

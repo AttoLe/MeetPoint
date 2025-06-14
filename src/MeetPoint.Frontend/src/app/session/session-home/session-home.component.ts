@@ -3,9 +3,10 @@ import { NgComponentOutlet } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { SessionMapComponent } from './session-map.component';
-import { SessionParticipantsComponent } from './session-participants.component';
-import { SessionRoutingsComponent } from './session-routings.component';
+import { SessionMapSectionComponent } from '../session-map/session-map-section.component';
+import { SessionParticipantsSectionComponent } from '../session-participants/session-participants-section.component';
+import { SessionRoutingsSectionComponent } from '../session-routings/session-routings-section.component';
+import { SectionHeaderComponent } from '../shared/page-header.component';
 
 interface GridCellLayout {
   id: string;
@@ -15,16 +16,19 @@ interface GridCellLayout {
 }
 
 @Component({
-  imports: [MatCardModule, MatIconModule, DragDropModule, NgComponentOutlet],
-  template: `<div class="header-split" style="margin: 0 10px 25px 10px;">
-      <h1>Home</h1>
-      <div style="display: flex; gap: 0.75rem;">
-        <mat-icon class="clickable" (click)="sharelink()"> share </mat-icon>
-        <mat-icon class="clickable" (click)="openSessionSettings()">
-          settings
-        </mat-icon>
-      </div>
-    </div>
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    DragDropModule,
+    NgComponentOutlet,
+    SectionHeaderComponent,
+  ],
+  template: `<app-page-header title="Home">
+      <mat-icon class="clickable" (click)="sharelink()"> share </mat-icon>
+      <mat-icon class="clickable" (click)="openSessionSettings()">
+        settings
+      </mat-icon>
+    </app-page-header>
     <div
       class="grid"
       [style.grid-template-rows]="gridTemplateRows"
@@ -73,14 +77,19 @@ export class SessionHomeComponent {
     columns: 3,
     rows: 3,
     cells: [
-      { id: '1', component: SessionMapComponent, colspan: 2, rowspan: 2 },
-      { id: '2', component: SessionParticipantsComponent },
-      { id: '3', component: SessionRoutingsComponent },
-      { id: '4', component: SessionMapComponent, colspan: 3 },
+      {
+        id: '1',
+        component: SessionMapSectionComponent,
+        colspan: 2,
+        rowspan: 2,
+      },
+      { id: '2', component: SessionParticipantsSectionComponent },
+      { id: '3', component: SessionRoutingsSectionComponent },
+      { id: '4', component: SessionParticipantsSectionComponent, colspan: 3 },
     ],
   };
 
-  SquareComponents = [SessionMapComponent];
+  SquareComponents = [SessionMapSectionComponent];
 
   get gridTemplateRows(): string {
     return `repeat(${this.gridLayout.rows})`;

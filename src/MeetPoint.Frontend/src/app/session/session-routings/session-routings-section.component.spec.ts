@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SessionRoutingsComponent } from './session-routings.component';
+import { SessionRoutingsSectionComponent } from './session-routings-section.component';
 
 describe('SessionRoutingsComponent', () => {
-  let component: SessionRoutingsComponent;
-  let fixture: ComponentFixture<SessionRoutingsComponent>;
+  let component: SessionRoutingsSectionComponent;
+  let fixture: ComponentFixture<SessionRoutingsSectionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionRoutingsComponent],
+      imports: [SessionRoutingsSectionComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SessionRoutingsComponent);
+    fixture = TestBed.createComponent(SessionRoutingsSectionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
