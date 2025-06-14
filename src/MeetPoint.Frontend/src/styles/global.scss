@@ -15,7 +15,6 @@ mat-grid-tile .card-section {
   height: 100%;
   display: flex;
   flex-direction: column;
-  margin: 10px;
   padding: 10px;
   outline: 1px solid var(--mat-sys-outline);
 }
@@ -45,7 +44,6 @@ mat-grid-tile .card-section {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
 }
 
 .clickable:hover {

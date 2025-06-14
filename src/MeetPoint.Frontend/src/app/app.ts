@@ -5,7 +5,7 @@ import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, MatIconModule],
-  template: ` <div class="top-right" (click)="toggleClass()">
+  template: ` <div class="top-right" (click)="toggleTheme()">
       <mat-icon class="clickable">
         {{ theme == 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon
       >
@@ -30,7 +30,7 @@ export class App {
     document.documentElement.classList.add('dark');
   }
 
-  toggleClass() {
+  toggleTheme() {
     document.documentElement.classList.remove(this.theme);
     this.theme = this.theme == 'dark' ? 'light' : 'dark';
     document.documentElement.classList.add(this.theme);

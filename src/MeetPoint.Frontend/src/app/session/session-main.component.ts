@@ -18,7 +18,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
     MatCardModule,
     MatListModule,
   ],
-  template: `<mat-sidenav-container style="height: 100vh">
+  template: ` <mat-sidenav-container style="height: 100%; margin-top: 5vh;">
     <mat-sidenav class="sidenav" mode="side" opened>
       <div class="nav-list">
         @for (item of navItems; track item) {
@@ -38,7 +38,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
       </div>
     </mat-sidenav>
     <mat-sidenav-content>
-      <div class="page-content">
+      <div style="margin: 0 3vw 2vh 5px">
         <router-outlet></router-outlet>
       </div>
     </mat-sidenav-content>
@@ -47,15 +47,15 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 
   .sidenav{
     height: 80%;
-    width: 10vw;
-    margin: 5vh auto;
+    width: 6vw;
+    margin: 0 auto;
   }
 
   .nav-list{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 25px;;
+    gap: 25px;
   }
 
   .item {
@@ -91,12 +91,9 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
     align-items: center;
     text-align: center;
     width: 50%;
-    margin: 4px auto;
+    margin: auto;
   }
 
-  .page-content {
-    margin: 4vh 10vh 0 4vh;
-  }
   `,
 })
 export class SessionMainComponent {
