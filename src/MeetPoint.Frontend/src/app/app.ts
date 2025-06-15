@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MainNavTopComponent } from './main-nav-top.component/main-nav-top.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterModule, MainNavTopComponent],
-  template: `<app-main-nav-top /> <router-outlet />`,
+  imports: [RouterModule],
+  template: `<router-outlet />`,
   styles: ``,
 })
-export class App {}
+export class App {
+  ngOnInit() {
+    document.documentElement.classList.add('dark');
+  }
+}

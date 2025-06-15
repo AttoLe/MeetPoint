@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-page-header',
   imports: [MatIconModule],
   template: ` <div class="header-split">
-    <h1>Home</h1>
+    <h1>{{ title() }}</h1>
     <div class="container clickable">
       <ng-content></ng-content>
     </div>
