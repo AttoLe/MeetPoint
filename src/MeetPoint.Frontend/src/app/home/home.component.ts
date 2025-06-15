@@ -3,6 +3,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Router } from '@angular/router';
+import { LayoutMainComponent } from '../shared/layout/layout-main.component';
+import { MainContentDirective } from '../shared/layout/main-content.directive';
 import { CreateSessionDialog } from './create-session-dialog.component';
 import { JoinSessionDialog } from './join-session-dialog.component';
 
@@ -15,21 +17,29 @@ interface TileConfig {
 
 @Component({
   selector: 'app-home.component',
-  imports: [MatCardModule, MatGridListModule],
-  template: ` <mat-grid-list [cols]="totalCols()" rowHeight="25vh">
-    @for (tile of tileConfigs(); track tile) {
-    <mat-grid-tile [colspan]="tile.span" (click)="tile.onClick()">
-      <mat-card class="card-section" style="margin: 10px">
-        <mat-card-content>
-          <mat-card-title>
-            <h2>{{ tile.title }}</h2>
-          </mat-card-title>
-          <mat-card-subtitle> {{ tile.desc }} </mat-card-subtitle>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    }
-  </mat-grid-list>`,
+  standalone: true,
+  imports: [
+    LayoutMainComponent,
+    MainContentDirective,
+    MatCardModule,
+    MatGridListModule,
+  ],
+  template: ` <app-layout-main>
+    <mat-grid-list *appMainContent [cols]="totalCols()" rowHeight="25vh">
+      @for (tile of tileConfigs(); track tile) {
+      <mat-grid-tile [colspan]="tile.span" (click)="tile.onClick()">
+        <mat-card class="card-section" style="margin: 10px">
+          <mat-card-content>
+            <mat-card-title>
+              <h2>{{ tile.title }}</h2>
+            </mat-card-title>
+            <mat-card-subtitle> {{ tile.desc }} </mat-card-subtitle>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      }
+    </mat-grid-list>
+  </app-layout-main>`,
   styles: `
 
     .mat-grid-list{
@@ -80,7 +90,7 @@ export class HomeComponent {
     {
       span: 3,
       title: 'Settings',
-      onClick: () => this.onSettingsClick(),
+      onClick: () => this._router.navigate(['/settings']),
     },
   ]);
 
@@ -96,9 +106,4 @@ export class HomeComponent {
       return result;
     });
   });
-
-  onSettingsClick() {
-    console.log('SETTINGS');
-    //this.router.navigate(['/settings']);
-  }
 }

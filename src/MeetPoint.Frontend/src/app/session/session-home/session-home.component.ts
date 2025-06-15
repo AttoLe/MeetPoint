@@ -3,10 +3,10 @@ import { NgComponentOutlet } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { SectionHeaderComponent } from '../../shared/page-header.component';
 import { SessionMapSectionComponent } from '../session-map/session-map-section.component';
 import { SessionParticipantsSectionComponent } from '../session-participants/session-participants-section.component';
 import { SessionRoutingsSectionComponent } from '../session-routings/session-routings-section.component';
-import { SectionHeaderComponent } from '../shared/page-header.component';
 
 interface GridCellLayout {
   id: string;
@@ -29,6 +29,7 @@ interface GridCellLayout {
         settings
       </mat-icon>
     </app-page-header>
+
     <div
       class="grid"
       [style.grid-template-rows]="gridTemplateRows"
@@ -40,7 +41,7 @@ interface GridCellLayout {
       @for (cell of gridLayout.cells; track cell.id){
       <mat-card
         [class]="'card-section ' + (isSquare(cell) ? ' square' : '')"
-        [style]="'padding: 25px; maxHeight: ' + getMaxHeight(cell) + ' vh'"
+        [style]="'padding: 25px; maxHeight: ' + getMaxHeight(cell) + ' %'"
         cdkDrag
         [cdkDragData]="cell"
         [style.gridColumn]="'span ' + (cell.colspan || 1)"
