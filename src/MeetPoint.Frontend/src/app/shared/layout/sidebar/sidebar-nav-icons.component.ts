@@ -1,17 +1,24 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
 import { NavItem } from '../nav-item-interface';
+import { SideNavController } from './side-nav.controller';
+import { Position } from './sidenav-config-interface';
 
-//button to close it??
 @Component({
   selector: 'app-sidebar-nav-icons',
   standalone: true,
   imports: [MatSidenavModule, RouterModule, MatIconModule],
   template: `
-    <div #sidenav class="nav-list">
-      @for (item of navItems(); track item) {
+    <div class="nav-list">
+      @if(toggle()){
+      <a class="item clickable" (click)="onClick()">
+        <div class="nav-icon-label">
+          <mat-icon> {{ toggle()?.icon }}</mat-icon>
+        </div>
+      </a>
+      } @for (item of navItems(); track item) {
       <a
         class="item clickable"
         [routerLink]="item.link"
@@ -75,5 +82,12 @@ import { NavItem } from '../nav-item-interface';
   `,
 })
 export class SidebarNavIconsComponent {
+  private _sidenavController = inject(SideNavController);
+
+  toggle = input<{ position: Position; icon: string }>();
   navItems = input<NavItem[]>([]);
+
+  onClick() {
+    this._sidenavController.toggle(this.toggle()?.position!);
+  }
 }
