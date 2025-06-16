@@ -1,29 +1,27 @@
-import { Injectable } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { inject, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UIStateService {
-  //private _router = inject(Router);
+  private _location = inject(Location);
+  theme: string = 'dark';
 
-  theme: 'dark' | 'light' = 'dark';
-  history: string[] = [];
+  constructor() {
+    const saved = sessionStorage.getItem('theme');
+    this.theme = saved ?? 'dark';
+    sessionStorage.setItem('theme', this.theme);
+    document.documentElement.classList.add(this.theme);
+  }
 
-  constructor(private _router: Router) {
-    this.history.push(_router.url);
-    this._router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.history.push(event.urlAfterRedirects);
-      }
-    });
-
-    console.log('AA', this.history);
-    console.log(this.canGoBack);
+  setDefault(theme: 'dark' | 'light'): void {
+    sessionStorage.setItem('theme', theme);
+    document.documentElement.classList.add(theme);
   }
 
   get canGoBack(): boolean {
-    return this.history.length > 1;
+    return window.history.length > 1;
   }
 
   get isDarkTheme(): boolean {
@@ -31,14 +29,14 @@ export class UIStateService {
   }
 
   goBack(): void {
-    console.log(this.history, this.canGoBack);
-    this.history.pop();
-    this._router.navigateByUrl(this.history.pop() || '/');
+    this._location.back();
   }
 
   toggleTheme(): void {
-    document.documentElement.classList.remove(this.theme);
-    this.theme = this.theme == 'dark' ? 'light' : 'dark';
-    document.documentElement.classList.add(this.theme);
+    const newTheme = this.theme == 'dark' ? 'light' : 'dark';
+    document.documentElement.classList.replace(this.theme, newTheme);
+
+    this.theme = newTheme;
+    sessionStorage.setItem('theme', this.theme);
   }
 }
