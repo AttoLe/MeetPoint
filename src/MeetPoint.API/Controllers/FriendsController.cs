@@ -16,8 +16,57 @@ public class FriendsController(UserManager<IdentityUser> userManager, IFriendsSe
     private readonly IFriendsService<string, IdentityUser> _friendsService = friendsService;
     private readonly IFriendInvitationsService<string> _friendInvitationsService = friendInvitationsService;
 
-    [HttpGet("friends")]
+    //would be there just for now
+#nullable disable
+    public record UserDto(string Id, string Email, string Username, string PhoneNumber);
+
     [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        return Ok(new UserDto(
+            user.Id,
+            user.Email,
+            user.UserName,
+            user.PhoneNumber
+        ));
+    }
+
+    public record UpdateDTO(string Username, string PhoneNumber);
+
+    [Authorize]
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateDTO userDto)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        user.UserName = userDto.Username;
+        user.PhoneNumber = userDto.PhoneNumber;
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded ? Ok() : BadRequest(result.Errors);
+    }
+
+    [Authorize]
+    [HttpPost("check-password")]
+    public async Task<IActionResult> CheckPassword([FromBody] string password)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        var result = await _userManager.CheckPasswordAsync(user, password);
+        return result ? Ok() : Unauthorized();
+    }
+
+    [Authorize]
+    [HttpGet("friends")]
     public async Task<IActionResult> GetFriends()
     {
         var userId = _userManager.GetUserId(User);

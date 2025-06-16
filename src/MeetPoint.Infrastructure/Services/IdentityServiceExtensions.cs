@@ -26,7 +26,7 @@ public static class IdentityServiceExtensions
 
     public static IServiceCollection AddIdentityValidation(this IServiceCollection services)
     {
-        services.AddScoped<IUserValidator<IdentityUser>, UserValidator>();
+        //services.AddScoped<IUserValidator<IdentityUser>, UserValidator>();
         services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;
