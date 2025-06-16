@@ -58,7 +58,8 @@ interface TileConfig {
       margin-top: auto;
       min-height: 40%;
       justify-content: flex-end
-    }`,
+    }
+    `,
 })
 export class HomeComponent {
   private _dialog = inject(MatDialog);

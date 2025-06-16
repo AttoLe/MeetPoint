@@ -3,7 +3,7 @@ import { NgComponentOutlet } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { SectionHeaderComponent } from '../../shared/page-header.component';
+import { PageHeaderComponent } from '../../shared/page-header.component';
 import { SessionMapSectionComponent } from '../session-map/session-map-section.component';
 import { SessionParticipantsSectionComponent } from '../session-participants/session-participants-section.component';
 import { SessionRoutingsSectionComponent } from '../session-routings/session-routings-section.component';
@@ -21,9 +21,9 @@ interface GridCellLayout {
     MatIconModule,
     DragDropModule,
     NgComponentOutlet,
-    SectionHeaderComponent,
+    PageHeaderComponent,
   ],
-  template: `<app-page-header title="Home">
+  template: `<app-page-header title="Home" toggle="start">
       <mat-icon class="clickable" (click)="sharelink()"> share </mat-icon>
       <mat-icon class="clickable" (click)="openSessionSettings()">
         settings

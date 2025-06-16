@@ -13,19 +13,21 @@ import { SidebarNavIconsComponent } from '../shared/layout/sidebar/sidebar-nav-i
   selector: 'app-session-main.component',
   imports: [
     MatSidenavModule,
-    MainContentDirective,
     LeftSidebarDirective,
-    RouterModule,
+    MainContentDirective,
     MatIconModule,
     MatCardModule,
     LayoutMainComponent,
     SidebarNavIconsComponent,
+    RouterModule,
   ],
-  template: ` <app-layout-main
-    [leftSideBarConfig]="{ mode: 'side', toggle: 'open', style: 'width: 6vw' }"
-  >
-    <app-sidebar-nav-icons *appLeftSidebar [navItems]="navItems" />
-    <router-outlet *appMainContent />
+  template: ` <app-layout-main>
+    <app-sidebar-nav-icons
+      *appLeftSidebar="{ style: 'width: 6vw' }"
+      [navItems]="navItems"
+      [toggle]="{ position: 'start', icon: 'arrow_drop_down' }"
+    />
+    <ng-container *appMainContent />
   </app-layout-main>`,
   styles: ``,
 })
