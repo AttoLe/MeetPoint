@@ -21,6 +21,17 @@ public class FriendsController(UserManager<IdentityUser> userManager, IFriendsSe
     public record UserDto(string Id, string Email, string Username, string PhoneNumber);
 
     [Authorize]
+    [HttpGet("meid")]
+    public async Task<IActionResult> GetMeId()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        return Ok(new { id = user.Id });
+    }
+
+    [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetMe()
     {
