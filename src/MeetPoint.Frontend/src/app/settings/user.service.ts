@@ -1,7 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
-import { AuthService, UserDto } from '../auth/auth.service';
+import { effect, inject, Injectable, signal } from '@angular/core';
+import { Observable, switchMap, tap } from 'rxjs';
+
+export interface UserDto {
+  id: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+}
 
 export interface FriendDto {
   id: string;
@@ -18,52 +24,30 @@ export interface UpdateDto {
   providedIn: 'root',
 })
 export class UserService {
-  private http = inject(HttpClient);
-  public user = inject(AuthService).user;
+  private _http = inject(HttpClient);
+  public readonly user = signal<UserDto | null>(null);
 
-  updateUser(dto: UpdateDto): Observable<any> {
-    return this.http
-      .put('/api/account/update', dto)
-      .pipe(catchError((error) => throwError(() => error)));
+  constructor() {
+    effect(() => this.getUserData().subscribe());
+    console.log('AFTER CONSTRUCTOR', this.user);
   }
 
-  getFriends(): Observable<UserDto[]> {
-    return this.http
-      .get<UserDto[]>('/api/account/friends')
-      .pipe(catchError((error) => throwError(() => error)));
+  getUserData(): Observable<UserDto> {
+    return this._http
+      .get<UserDto>('api/account/me')
+      .pipe(tap((res) => this.user.set(res)));
   }
 
-  deleteFriend(id: string): Observable<any> {
-    return this.http.delete(`/api/account/friends/delete${id}`);
+  //change later to more data field or separate it
+  setUserData(dto: UpdateDto): Observable<any> {
+    return this._http.put('/api/account/update', dto);
   }
 
-  getReceivedIntvites(): Observable<UserDto[]> {
-    return this.http
-      .get<UserDto[]>('/api/account/invites/received')
-      .pipe(catchError((error) => throwError(() => error)));
+  setUserDataAndReload(dto: UpdateDto): Observable<UserDto> {
+    return this.setUserData(dto).pipe(switchMap(() => this.getUserData()));
   }
 
-  getSentInvites(): Observable<UserDto[]> {
-    return this.http
-      .get<UserDto[]>('/api/account/intives/send')
-      .pipe(catchError((error) => throwError(() => error)));
-  }
-
-  sentInvite(id: string): Observable<void> {
-    return this.http
-      .post<void>(`/api/account/invite/send${id}`, null)
-      .pipe(catchError((error) => throwError(() => error)));
-  }
-
-  rejectInvite(id: string): Observable<void> {
-    return this.http
-      .post<void>(`/api/account/invite/reject${id}`, null)
-      .pipe(catchError((error) => throwError(() => error)));
-  }
-
-  acceptInvite(id: string): Observable<void> {
-    return this.http
-      .post<void>(`/api/account/invite/accept${id}`, null)
-      .pipe(catchError((error) => throwError(() => error)));
+  checkPassword(password: string): Observable<any> {
+    return this._http.post<void>('/api/account/check-password', password);
   }
 }

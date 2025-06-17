@@ -1,0 +1,79 @@
+import { HttpClient } from '@angular/common/http';
+import { effect, inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError, EMPTY, Observable, tap, throwError } from 'rxjs';
+import { skipAuth } from '../http-context.tokens';
+
+export interface AuthResponse {
+  accessToken: string;
+  expiresIn: number;
+  refreshToken: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class AuthTokenService {
+  private _http = inject(HttpClient);
+  private _router = inject(Router);
+  private _refreshing = signal<boolean>(false);
+  private readonly _keys = {
+    accessToken: 'access_token',
+    refreshToken: 'refresh_token',
+    expireTime: 'expire_time',
+    rememberMe: 'remember_me',
+  };
+
+  constructor() {
+    if (!this.getAccessToken) effect(() => this.refresh().subscribe());
+  }
+
+  refresh(): Observable<AuthResponse> {
+    if (this._refreshing()) return EMPTY;
+    this._refreshing.set(true);
+
+    const refreshToken = localStorage.getItem(this._keys.refreshToken);
+    if (!refreshToken) {
+      this._router.navigate(['login']);
+      this.clear();
+    }
+
+    return this._http
+      .post<AuthResponse>(
+        '/api/account/refresh',
+        { refreshToken: refreshToken },
+        { context: skipAuth() }
+      )
+      .pipe(
+        tap((res) => this.set(res)),
+        tap(() => this._refreshing.set(false)),
+        catchError((err) => {
+          this._refreshing.set(false);
+          return throwError(() => err);
+        })
+      );
+  }
+
+  isAccessTokenExpiringSoon(bufferMin = 1): boolean {
+    const expiresTime = parseInt(
+      localStorage.getItem(this._keys.expireTime) || '0',
+      10
+    );
+    const elapsed = (expiresTime - Date.now()) / 1000 / 60;
+    return elapsed < bufferMin;
+  }
+
+  get getAccessToken(): string | null {
+    return localStorage.getItem(this._keys.accessToken);
+  }
+
+  set(res: AuthResponse): void {
+    const expireTime = Date.now() + res.expiresIn * 1000;
+    console.log(res, res.expiresIn * 1000, expireTime);
+    localStorage.setItem(this._keys.expireTime, expireTime.toString());
+    localStorage.setItem(this._keys.accessToken, res.accessToken);
+    localStorage.setItem(this._keys.refreshToken, res.refreshToken);
+  }
+
+  clear(): void {
+    Object.values(this._keys).forEach((key) => localStorage.removeItem(key));
+  }
+}
