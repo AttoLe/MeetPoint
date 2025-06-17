@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, effect, inject } from '@angular/core';
 import {
   AbstractControl,
@@ -24,6 +25,12 @@ import { SidebarNavIconsComponent } from '../shared/layout/sidebar/sidebar-nav-i
 import { PageHeaderComponent } from '../shared/page-header.component';
 import { UserService } from './user.service';
 
+export interface Settings {
+  email: string;
+  username: string;
+  phoneNumber: string;
+}
+
 @Component({
   selector: 'app-settings.component',
   standalone: true,
@@ -41,6 +48,7 @@ import { UserService } from './user.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    CommonModule,
   ],
   template: ` <app-layout-main>
     <app-sidebar-nav-icons *appLeftSidebar="{ style: 'width: 6vw' }" />
@@ -69,7 +77,7 @@ import { UserService } from './user.service';
               <input
                 matInput
                 type="text"
-                formControlName="phone"
+                formControlName="phoneNumber"
                 placeholder="123456789"
                 maxlength="15"
                 minlength="9"
@@ -83,7 +91,7 @@ import { UserService } from './user.service';
               </mat-form-field>
 
               <mat-form-field class="grid-item larger-form" appearance="fill">
-                <mat-label>Enter current password</mat-label>
+                <mat-label>Enter new password</mat-label>
                 <input matInput type="password" formControlName="new" />
               </mat-form-field>
             </ng-container>
@@ -169,9 +177,9 @@ import { UserService } from './user.service';
   `,
 })
 export class SettingsMainComponent {
-  private _userService = inject(UserService);
-  private _initialData: any;
+  private _initialData?: Settings = undefined;
   authService = inject(AuthService);
+  private _userService = inject(UserService);
 
   form = new FormGroup(
     {
@@ -192,44 +200,53 @@ export class SettingsMainComponent {
 
   constructor() {
     effect(() => {
-      const user = this._userService.user();
+      const user = this._userService.user()!;
       if (user) {
-        this._initialData = user;
-        this.form.patchValue({
+        this._initialData = {
           email: user.email,
-          username: user.userName,
+          username: user.username,
           phoneNumber: user.phoneNumber,
-        });
+        };
+        this.form.patchValue(user);
       }
     });
   }
 
   passwordCheckValidation(): AsyncValidatorFn {
-    const authService = inject(AuthService);
-
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       if (!control.value.password?.new || !control.value.password?.current)
         return of(null);
 
-      return authService.checkPassword(control.value.password?.current).pipe(
-        map(() => null),
-        catchError((error) => of({ Error: error }))
-      );
+      return this._userService
+        .checkPassword(control.value.password?.current)
+        .pipe(
+          map(() => null),
+          catchError((error) => of({ Error: error }))
+        );
     };
   }
 
   save() {
-    const updatedData = this.form.getRawValue();
+    const updatedData: Settings = {
+      email: this.form.value.email!,
+      username: this.form.value.username!,
+      phoneNumber: this.form.value.phoneNumber!,
+    };
+
     if (!this.hasChanges(updatedData)) return;
 
     this._userService
-      .updateUser({
+      .setUserDataAndReload({
         userName: updatedData.username!,
         phoneNumber: updatedData.phoneNumber!,
       })
       .subscribe({
         next: () => {
-          this._initialData = updatedData;
+          this._initialData = {
+            email: updatedData.email!,
+            username: updatedData.username!,
+            phoneNumber: updatedData.phoneNumber!,
+          };
         },
         error: (err) => console.error('Update error', err),
       });

@@ -94,12 +94,6 @@ export class LoginComponent {
         email: this.form.value.email!,
         password: this.form.value.password!,
       })
-      .subscribe({
-        next: (res) => {
-          console.log('Login success:', res);
-          this._router.navigate(['/home']);
-        },
-        error: (err) => console.error('Register or login failed', err),
-      });
+      .subscribe();
   }
 }

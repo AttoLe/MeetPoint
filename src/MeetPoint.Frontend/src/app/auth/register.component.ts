@@ -107,7 +107,6 @@ export class RegisterComponent {
         email: this.form.value.email!,
         password: this.form.value.password!,
       })
-      .subscribe((res) => console.log('RESULT', res));
-    this._router.navigate(['/home']);
+      .subscribe();
   }
 }

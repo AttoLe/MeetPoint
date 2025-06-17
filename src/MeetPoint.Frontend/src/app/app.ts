@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AuthService } from './auth/auth.service';
+import { AuthTokenService } from './auth/auth-token.service';
 import { UIStateService } from './shared/layout/top/uistate-service';
 
 @Component({
@@ -12,5 +12,5 @@ import { UIStateService } from './shared/layout/top/uistate-service';
 })
 export class App {
   _iuService = inject(UIStateService);
-  _authService = inject(AuthService);
+  _authService = inject(AuthTokenService);
 }
