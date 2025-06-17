@@ -30,6 +30,16 @@ services:
         networks:
             - meetpoint-network
 
+    redis:
+        image: redis:7
+        container_name: redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        networks:
+            - meetpoint-network
+
     nginx:
         build:
             context: docker
@@ -64,3 +74,4 @@ networks:
 
 volumes:
     pgdata:
+    redis_data:
