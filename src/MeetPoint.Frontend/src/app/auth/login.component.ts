@@ -88,6 +88,10 @@ export class LoginComponent {
     remember_me: new FormControl(false),
   });
 
+  ngOnInit() {
+    if (this._authService.isAuthenticated()) this._router.navigate(['/home']);
+  }
+
   login(): void {
     this._authService
       .login({
