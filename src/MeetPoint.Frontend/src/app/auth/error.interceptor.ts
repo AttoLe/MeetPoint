@@ -6,6 +6,8 @@ import { AuthTokenService } from './auth-token.service';
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(AuthTokenService);
 
+  console.log('EROR INTERCEPTOR', req);
+
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
       if (err.status === 401 && !req.headers.has('x-retry')) {

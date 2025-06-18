@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
+import { SessionHubService } from '../session/session-hub.service';
 import { TimeFrequency } from './shared/time-frequency.component';
 
 @Component({
@@ -80,6 +81,7 @@ import { TimeFrequency } from './shared/time-frequency.component';
 })
 export class CreateSessionDialog {
   private _dialogRef = inject(MatDialogRef);
+  private _sessionHubService = inject(SessionHubService);
   private _router = inject(Router);
 
   tokenPlaceHolder: string = 'A1B2C3D4E5';
@@ -114,7 +116,9 @@ export class CreateSessionDialog {
     if (this.form.value.token == '')
       this.form.get('token')?.setValue(this.tokenPlaceHolder);
 
-    this._dialogRef.close(/*data??*/);
+    //this._sessionHubService.start();
+
+    this._dialogRef.close();
     this._router.navigate([`/session`, this.form.value.token]);
   }
 }

@@ -28,6 +28,7 @@ export class AuthService {
   }
 
   login(dto: AuthDto): Observable<void> {
+    console.log(dto, this.userId());
     return this._http
       .post<AuthResponse>('/api/account/login', dto, { context: skipAuth() })
       .pipe(

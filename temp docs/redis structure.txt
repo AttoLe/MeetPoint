@@ -1,0 +1,60 @@
+user:{userId}:sessions:{type}:
+	- ttl on userId - if data is empty
+	- data is set of session id
+	- add only that session, which meta.type = standart
+	- used to dynamically geodata push from frontend
+
+user:{userId}:session:longtermed
+	....
+
+session:{sessionId}:meta:
+	- ttl on sessionId
+	- data is json of type //start, end(if planned), etc
+	- used to save session metadata
+
+session:{sessionId}:owner
+	- ttl on sessionId
+	- data is string of ownerId
+	- owner is also just a user in all datatypes later
+
+session:{sessionId}:settings
+	- ttl on sessionId
+	- data is json
+
+//all tll, and set up is for standard session, other types will be implemented later
+
+session:{sessionId}:geocenter
+	- ttl is 15 minutes, or sessionId
+	- data is hash of lng, lat, timestamp
+	- geocenter for futher usage in algorithms
+
+session:{sessionId}:finalPlace
+	- ttl on sessionId
+	- data is hash of a lot of place values
+	- final chosen place
+
+session:{sessionId}:users
+	- ttl on sesionId
+	- data is set of users
+
+session:{sessionId}:user:{userId}:settings
+	- ttl on sessionId and userId
+	- data is json of personal settings
+
+session:{sessionId}:user:{userId}:movement:full
+	- ttl is 15 minutes, or sessionId and userId,
+	- list of lng, lat, timestamp
+	- full detailed movement, set once per second
+
+session:{sessionId}:user:{userId}:movement:reduced
+	- ttl is 15 minutes, or sessionId and userId,
+	- list of lng, lat, timestamp
+	- just all movement, set once per 15 seconds??
+
+session:{sessionId}:user:{userId}:route:
+	- ttl is 15 minutes, or sessionId and userId,
+	- hash of polilyne, last_passed_index, timestamp, transport_type,etc
+	- just all movement, set once per 15 seconds??
+
+
+

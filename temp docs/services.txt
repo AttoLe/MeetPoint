@@ -1,0 +1,118 @@
+Asp net api, angular. 
+There is signalr responsive multiuser sessions. Data from them stored in Redis.
+
+User can be in multiple session at the same time. So his geodata update should be singleton to user, not sessions. Because of this, it is provided through http controller to backend. 
+
+Frontend provide user geo update once per second. Then data should be sent to service that make it rx observables, transform and filter. On right timing and state write it to Redis.
+
+This part is related to sessions (signalr hubs).
+Frontend calls, or hub emit events on update. There two backend services (route and places related) read data from Redis, make external api calls, transform it to data that should be presented on frontend.
+
+//ADD VOTING
+
+Frontend services:
+	UserSessionStateService:
+		- singleton, injectable service
+		- concept: responsible for checking user states on sessions
+		- details: on init populate local signals variables of sessions arrays (standart session type) from backend (by calling !!!!). Provide listeners for signalr (join and leave event) to update those signals. Return computed signals of isInAnySession
+	GeoService:
+		- singleton, injectable service
+		- concept: responsible for getting geodata and doing http post
+		- details: get UserSessionStateService signals of user state, if user is in any standars session - start doing geodata post once per second
+	SessionHubService:
+		- singleton, injectable service
+		- concept: responsible for interaction with signalr hub.
+		- details: creates session token or check user ones for uniqueness from backend (by calling !!!). build connection using accesstokenfactory and access token. provide functionality to connect to right session (signalr hub group) by token, using backend (by calling !!!). 
+	SessionLifetimeService:
+		- singleton injectable service
+		- concept: responsible for creating and deleting sessions
+		- details: use SessionTokenService and session token as (signalr group) session identifier. call backend to create/delete groups. 
+	SessionService:
+		- per session??
+		- concept: responsible for all acting inside session
+
+Backend: 
+	Domain classes:
+		- UserParticipant
+		- UserGeoLocation
+		- Route
+		- Place
+		- SessionMeta
+		- SessionSettings
+		- UserSesssionSettings
+		- GeoPoint
+		- SessionToken
+		- UserId
+		- SessionId
+	Domain records:
+	Domain structures:
+	Application interfaces:
+		- ISessionService
+			- createSession
+			- deleteSession
+		- ISessionDataService
+			- getSessionMeta
+			- getSessionUsers
+			- props: 
+				- SessionSettings
+				- FinalPlace
+		- ISessionUserService
+			- addUserToSession 
+			- removeUserFromSession 
+			- getUserSessions
+			- props:
+				- UserSessionSettings
+		- ISessonCenterService
+			- computeGeoCenter 
+			- storeGeoCenter
+		- IPlaceSelectionService
+			- computePlaceOptions
+			- chooseFinalPlace
+		- ISessionTokenService
+			- generateToken
+			- validateToken
+			- getSessionId
+	Infrastructure interfaces:
+		- ISessionRepository
+			- getSessionMeta
+			- setSessionMeta
+			- getSessionSettings
+			- setSessionSettings
+		- ISessionUserRepository
+			- getSessionsUser
+			- addUserToSession
+			- removeUserFromSession
+		- IUserMovementRepository
+			- appendFullMovement
+			- appendReducedMovement
+		- ISessionRouteRepository
+			- setSessionUserRoute
+			- getSessionUserRoute
+		- ISessionGeoCenterRepository
+			- setGeoCenter
+			- getGeoCenter
+		- ISessionFinalPlaceRepository
+			- setFinalPlace
+			- getFinalPlace
+
+SessionHub relaced:
+
+ISessionHubNotifier
+    Task EmitUserJoined
+    Task EmitUserLeft
+
+    Task EmitUserRouteUpdated
+    Task EmitUserPlacesUpdated
+    Task EmitGeoCenterUpdated
+    Task EmitFinalPlaceChosen
+
+ISessionClient
+    Task UserJoined
+    Task UserLeft
+    Task GeoCenterUpdated
+    Task FinalPlaceChosen
+
+    Task YourRouteUpdated
+    Task YourPlacesUpdated
+
+Better: backend recalculates once per second, emits to all affected users.

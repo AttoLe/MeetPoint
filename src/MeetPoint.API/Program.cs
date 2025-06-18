@@ -2,7 +2,6 @@ using MeetPoint.API;
 using MeetPoint.Application.Interfaces;
 using MeetPoint.Infrastructure.Cache;
 using MeetPoint.Infrastructure.Persistence;
-using MeetPoint.Infrastructure.Persistence.Entities;
 using MeetPoint.Infrastructure.Services;
 using MeetPoint.Infrastructure.SignalR;
 using MeetPoint.Infrastructure.Validators;
@@ -29,7 +28,10 @@ builder.Services
 var redisConnection = builder.Configuration.GetConnectionString("Redis");
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     ConnectionMultiplexer.Connect(redisConnection!));
+
 builder.Services.AddSingleton<IRedisService, RedisService>();
+builder.Services.AddSingleton<ISessionHubService, SessionHubService>();
+
 
 builder.Services.AddSignalR()
     .AddStackExchangeRedis(redisConnection!, options =>
@@ -56,7 +58,7 @@ app.UseRouting();
 
 app.MapGroup("/api/account/").MapIdentityApi<IdentityUser>();
 
-app.UseMiddleware<IdentityTokenQueryAuthenticationMiddleware>();
+//app.UseMiddleware<IdentityTokenQueryAuthenticationMiddleware>();
 app.MapHub<SessionHub>("/hubs/session");
 
 app.MapControllers();
