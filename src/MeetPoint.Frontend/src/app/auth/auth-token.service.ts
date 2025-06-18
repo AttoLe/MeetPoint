@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, EMPTY, Observable, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable, tap, throwError } from 'rxjs';
 import { skipAuth } from '../http-context.tokens';
 
 export interface AuthResponse {
@@ -22,8 +22,11 @@ export class AuthTokenService {
     rememberMe: 'remember_me',
   };
 
+  readonly tokensInvalid = signal(false);
+
   constructor() {
-    if (!this.getAccessToken) effect(() => this.refresh().subscribe());
+    if (this.getAccessToken) this.refresh().subscribe();
+    else this.tokensInvalid.set(true);
   }
 
   refresh(): Observable<AuthResponse> {
@@ -31,9 +34,12 @@ export class AuthTokenService {
     this._refreshing.set(true);
 
     const refreshToken = localStorage.getItem(this._keys.refreshToken);
+
     if (!refreshToken) {
-      this._router.navigate(['login']);
       this.clear();
+      return throwError(
+        () => new Error('AUTH TOKEN SERVICE - No refresh token available')
+      );
     }
 
     return this._http
@@ -43,12 +49,15 @@ export class AuthTokenService {
         { context: skipAuth() }
       )
       .pipe(
-        tap((res) => this.set(res)),
-        tap(() => this._refreshing.set(false)),
+        tap((res) => {
+          this.set(res);
+        }),
         catchError((err) => {
-          this._refreshing.set(false);
-          return throwError(() => err);
-        })
+          this._router.navigate(['/login']);
+          this.clear();
+          return EMPTY;
+        }),
+        finalize(() => this._refreshing.set(false))
       );
   }
 
@@ -67,13 +76,14 @@ export class AuthTokenService {
 
   set(res: AuthResponse): void {
     const expireTime = Date.now() + res.expiresIn * 1000;
-    console.log(res, res.expiresIn * 1000, expireTime);
     localStorage.setItem(this._keys.expireTime, expireTime.toString());
     localStorage.setItem(this._keys.accessToken, res.accessToken);
     localStorage.setItem(this._keys.refreshToken, res.refreshToken);
+    this.tokensInvalid.set(false);
   }
 
   clear(): void {
     Object.values(this._keys).forEach((key) => localStorage.removeItem(key));
+    this.tokensInvalid.set(true);
   }
 }

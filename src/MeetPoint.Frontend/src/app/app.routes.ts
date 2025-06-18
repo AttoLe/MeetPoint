@@ -29,10 +29,12 @@ export const routes: Routes = [
   {
     path: 'settings',
     component: SettingsMainComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'session/:token',
     component: SessionMainComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -42,10 +44,12 @@ export const routes: Routes = [
       {
         path: 'home',
         component: SessionHomeComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: 'test',
         component: SettingsMainComponent,
+        canActivate: [AuthGuard],
       },
     ],
   },

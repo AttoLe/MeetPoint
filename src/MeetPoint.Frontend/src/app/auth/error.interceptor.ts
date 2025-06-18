@@ -1,28 +1,15 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, switchMap, throwError } from 'rxjs';
-import { AuthTokenService } from './auth-token.service';
+import { catchError, throwError } from 'rxjs';
+import { AuthService } from './auth.service';
 
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
-  const tokenService = inject(AuthTokenService);
-
-  console.log('EROR INTERCEPTOR', req);
-
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      if (err.status === 401 && !req.headers.has('x-retry')) {
-        return tokenService.refresh().pipe(
-          switchMap(() => next(req)),
-          catchError(() => {
-            const retryReq = req.clone({
-              setHeaders: {
-                Authorization: `Bearer ${tokenService.getAccessToken || ''}`,
-                'x-retry': 'true',
-              },
-            });
-            return next(retryReq);
-          })
-        );
+      console.log('ITERCEPTOR ERROR:', { REQUEST: req, ERROR: err });
+      if (err.status === 401) {
+        inject(AuthService).logout();
+        console.log('INTERCEPTOR ERROR - 401 - LOGOUT');
       }
       return throwError(() => err);
     })
