@@ -2,6 +2,7 @@ using System.Text;
 
 using MeetPoint.Application.Interfaces;
 using MeetPoint.Infrastructure.Persistence;
+using MeetPoint.Infrastructure.Persistence.Entities;
 using MeetPoint.Infrastructure.Validators;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,7 +18,7 @@ public static class IdentityServiceExtensions
 
     public static IServiceCollection AddBasicIdentity(this IServiceCollection services)
     {
-        services.AddIdentityApiEndpoints<IdentityUser>()
+        services.AddIdentityApiEndpoints<ApplicationUser>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
@@ -26,7 +27,7 @@ public static class IdentityServiceExtensions
 
     public static IServiceCollection AddIdentityValidation(this IServiceCollection services)
     {
-        //services.AddScoped<IUserValidator<IdentityUser>, UserValidator>();
+        //services.AddScoped<IUserValidator<ApplicationUser>, UserValidator>();
         services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;
@@ -81,7 +82,7 @@ public static class IdentityServiceExtensions
         });
 
         services.AddAuthorization();
-        services.AddScoped<IJwtTokenGenerator<IdentityUser>, JwtTokenGenerator>();
+        services.AddScoped<IJwtTokenGenerator<ApplicationUser>, JwtTokenGenerator>();
 
         return services;
     }

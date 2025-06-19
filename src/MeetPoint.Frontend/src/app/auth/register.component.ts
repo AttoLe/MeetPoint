@@ -12,7 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AuthService } from './auth.service';
 import { matchFieldsValidator } from './match-fields-validator';
 
@@ -82,7 +82,6 @@ import { matchFieldsValidator } from './match-fields-validator';
   }`,
 })
 export class RegisterComponent {
-  private _router = inject(Router);
   private _authService = inject(AuthService);
 
   form = new FormGroup(

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import {
   FormControl,
@@ -13,7 +14,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { SessionHubService } from '../session/session-hub.service';
-import { TimeFrequency } from './shared/time-frequency.component';
+import { PlaceTypes } from '../shared/Places/PlaceTypes';
+
+export interface sessionSettings {
+  placeFilter: string[];
+  allow_others_to_propose_places: boolean;
+}
 
 @Component({
   selector: 'app-create-session-dialog.component',
@@ -25,13 +31,13 @@ import { TimeFrequency } from './shared/time-frequency.component';
     MatSelectModule,
     MatCheckboxModule,
     MatButtonModule,
-    TimeFrequency,
+    CommonModule,
   ],
   template: `
     <h2 mat-dialog-title>Create Session</h2>
     <mat-dialog-content>
       <form [formGroup]="form">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" style="margin-bottom: 20px">
           <mat-label>Change session token</mat-label>
           <input
             id="token"
@@ -48,17 +54,12 @@ import { TimeFrequency } from './shared/time-frequency.component';
           </mat-hint>
         </mat-form-field>
 
-        <update-time-slider
-          [selectedIndex]="1"
-          [control]="timeFrequencyControl"
-        ></update-time-slider>
-
         <mat-form-field appearance="fill">
           <mat-label>Add place filters</mat-label>
           <mat-select formControlName="placeFilter" multiple>
-            @for (option of placeFilterOptions; track option) {
-            <mat-option [value]="option.id">
-              {{ option.name }}
+            @for (pair of allplacefilterOptions; track pair) {
+            <mat-option [value]="pair[0]">
+              {{ pair[1] }}
             </mat-option>
             }
           </mat-select>
@@ -84,12 +85,11 @@ export class CreateSessionDialog {
   private _sessionHubService = inject(SessionHubService);
   private _router = inject(Router);
 
-  tokenPlaceHolder: string = 'A1B2C3D4E5';
-  placeFilterOptions: PlaceTypes[] = [
-    { id: 1, name: 'cafe' },
-    { id: 2, name: 'restaurant' },
-    { id: 3, name: 'shop' },
-  ];
+  tokenPlaceHolder: string = '';
+  allplacefilterOptions = Object.entries(PlaceTypes);
+  placeFilterOptions: string[] = this.allplacefilterOptions
+    .map((pair) => pair[0])
+    .slice(0, 4);
 
   form = new FormGroup({
     token: new FormControl('', [
@@ -97,26 +97,43 @@ export class CreateSessionDialog {
       Validators.maxLength(10),
     ]),
     timeFrequency: new FormControl(),
-    placeFilter: new FormControl<PlaceTypes[]>([]),
+    placeFilter: new FormControl<string[]>([]),
     allow_others_to_propose_places: new FormControl(false),
   });
 
-  ngOnInit() {
-    //set values??
-  }
-
-  get timeFrequencyControl(): FormControl {
-    return this.form.get('timeFrequency') as FormControl;
+  async ngOnInit() {
+    this._sessionHubService.generateSessionToken().subscribe((token) => {
+      this.form.patchValue({
+        token: token,
+        placeFilter: this.placeFilterOptions,
+      });
+      this.tokenPlaceHolder = token;
+    });
   }
 
   create(): void {
-    //create session, hub with service and signalr
-    //if no filter give all or nothig??
-    //copy link to clipboard
-    if (this.form.value.token == '')
-      this.form.get('token')?.setValue(this.tokenPlaceHolder);
+    const token = this.form.value.token!;
 
-    //this._sessionHubService.start();
+    if (token != this.tokenPlaceHolder) {
+      this._sessionHubService.checkSessionToken(token).subscribe((isValid) => {
+        if (!isValid) this.form.patchValue({ token: this.tokenPlaceHolder });
+      });
+    }
+
+    const settings: sessionSettings = {
+      placeFilter: this.form.value.placeFilter || [],
+      allow_others_to_propose_places:
+        this.form.value.allow_others_to_propose_places!,
+    };
+
+    this._sessionHubService
+      .createSession(token, 'standart', settings)
+      .subscribe();
+
+    localStorage.setItem(
+      'placeFilter',
+      JSON.stringify(this.placeFilterOptions)
+    );
 
     this._dialogRef.close();
     this._router.navigate([`/session`, this.form.value.token]);

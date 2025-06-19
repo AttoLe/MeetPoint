@@ -90,6 +90,7 @@ export class LoginComponent {
 
   ngOnInit() {
     if (this._authService.isAuthenticated()) this._router.navigate(['/home']);
+    //this.form.patchValue({ email: 'test@gmail.com', password: 'QDrw1234.' });
   }
 
   login(): void {

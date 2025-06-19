@@ -78,8 +78,6 @@ export class LayoutMainComponent {
   private _sideNavController = inject(SideNavController);
 
   ngAfterViewInit() {
-    console.log('AAA', this.mainContent().templateRef);
-
     if (this.leftSideBar() != undefined)
       this._sideNavController.attach('start', this.leftSidenav!);
     if (this.rightSideBar() != undefined)

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -84,6 +84,22 @@ export interface Settings {
               />
             </mat-form-field>
 
+            <div style="height: 60%; width: 60%; margin: auto">
+              <img
+                class="profile-pic"
+                [src]="image() ?? user()?.profileImageUrl"
+                (click)="fileInput.click()"
+                style="cursor: pointer"
+              />
+            </div>
+
+            <input
+              type="file"
+              #fileInput
+              hidden
+              (change)="onFileSelected($event)"
+            />
+
             <ng-container formGroupName="password">
               <mat-form-field class="grid-item larger-form" appearance="fill">
                 <mat-label>Enter current password</mat-label>
@@ -128,7 +144,8 @@ export interface Settings {
       height: 100%;
       margin: auto;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
     }
 
@@ -180,6 +197,12 @@ export class SettingsMainComponent {
   private _initialData?: Settings = undefined;
   authService = inject(AuthService);
   private _userService = inject(UserService);
+  user = computed(() => this._userService.user());
+  file = signal<File | null>(null);
+  image = computed(() => {
+    if (this.file()) return URL.createObjectURL(this.file()!);
+    return null;
+  });
 
   form = new FormGroup(
     {
@@ -200,11 +223,11 @@ export class SettingsMainComponent {
 
   constructor() {
     effect(() => {
-      const user = this._userService.user()!;
+      const user = this.user();
       if (user) {
         this._initialData = {
           email: user.email,
-          username: user.username,
+          username: user.username!,
           phoneNumber: user.phoneNumber,
         };
         this.form.patchValue(user);
@@ -226,6 +249,14 @@ export class SettingsMainComponent {
     };
   }
 
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    this.file.set(input.files[0]);
+  }
+
   save() {
     const updatedData: Settings = {
       email: this.form.value.email!,
@@ -233,13 +264,16 @@ export class SettingsMainComponent {
       phoneNumber: this.form.value.phoneNumber!,
     };
 
-    if (!this.hasChanges(updatedData)) return;
+    if (!this.hasChanges(updatedData) && this.file() == null) return;
 
     this._userService
-      .setUserDataAndReload({
-        userName: updatedData.username!,
-        phoneNumber: updatedData.phoneNumber!,
-      })
+      .setUserDataAndReload(
+        {
+          userName: updatedData.username!,
+          phoneNumber: updatedData.phoneNumber!,
+        },
+        this.file()
+      )
       .subscribe({
         next: () => {
           this._initialData = {

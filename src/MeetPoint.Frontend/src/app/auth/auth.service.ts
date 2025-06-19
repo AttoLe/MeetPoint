@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, effect, inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ignoreElements, Observable, tap } from 'rxjs';
+import { ignoreElements, Observable, switchMap, tap } from 'rxjs';
 import { skipAuth } from '../http-context.tokens';
 import { AuthResponse, AuthTokenService } from './auth-token.service';
 
@@ -38,7 +38,7 @@ export class AuthService {
     return this._http
       .post<void>('/api/account/register', dto, { context: skipAuth() })
       .pipe(
-        tap(() => this.login(dto)),
+        switchMap(() => this.login(dto)),
         ignoreElements()
       );
   }

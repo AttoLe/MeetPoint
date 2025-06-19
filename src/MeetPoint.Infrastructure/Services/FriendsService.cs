@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MeetPoint.Infrastructure.Services;
 
-public class FriendService(AppDbContext dbContext) : IFriendsService<string, IdentityUser>
+public class FriendService(AppDbContext dbContext) : IFriendsService<string, ApplicationUser>
 {
     private readonly AppDbContext _db = dbContext;
 
-    public async Task<List<IdentityUser>> GetFriendsAsync(string userId)
+    public async Task<List<ApplicationUser>> GetFriendsAsync(string userId)
     {
         return await _db.UserFriends
             .Where(uf => uf.UserId == userId || uf.OtherUserId == userId)

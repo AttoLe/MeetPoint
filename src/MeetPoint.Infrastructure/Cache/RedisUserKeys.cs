@@ -9,11 +9,11 @@ public static class RedisUsersKeys
         $"session:{sessionId}:user:{userId}:settings";
 
     // 15 minutes ttl  - on starndart
-    public static string MovementFullKey(string sessionId, string userId) =>
-        $"session:{sessionId}:user:{userId}:movement:full";
+    public static string MovementFullKey(string dataType, string userId) =>
+        $"user:{userId}:movement:{dataType}:full";
 
-    public static string MovementReducedKey(string sessionId, string userId) =>
-        $"session:{sessionId}:user:{userId}:movement:reduced";
+    public static string MovementReducedKey(string dataType, string userId) =>
+        $"user:{userId}:movement:{dataType}:reduced";
 
     public static string RouteKey(string sessionId, string userId) =>
         $"session:{sessionId}:user:{userId}:route";
@@ -22,8 +22,6 @@ public static class RedisUsersKeys
         $"session:{sessionId}:user:{userId}:ttl-anchor";
 
     public static IEnumerable<string> AllKeysForTTl(string sessionId, string userId) => [
-        MovementFullKey(sessionId, userId),
-        MovementReducedKey(sessionId, userId),
         RouteKey(sessionId, userId),
         SettingsKey(sessionId, userId)
     ];

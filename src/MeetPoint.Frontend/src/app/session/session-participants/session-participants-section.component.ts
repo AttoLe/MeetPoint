@@ -1,28 +1,40 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../settings/user.service';
 import { SectionHeaderComponent } from '../shared/section-header.component';
 
-interface Participant {
-  id: number;
+export interface Participant {
+  id: string;
   username: string;
-  color: string;
+  avatar?: string;
 }
 
 @Component({
   selector: 'app-session-participants-section.component',
   imports: [MatIconModule, SectionHeaderComponent],
-  template: ` <div style="height: 100%; width: 100%">
+  template: ` <div #container style="height: 100%; width: 100%">
     <app-section-header
       title="Participants"
       (onClick)="openSessionParticipantPage()"
     />
-    <div class="carousele">
-      @for (participant of Participants; track participant){
-      <div class="person-container" (onClick)="openProfile()">
-        <div
-          class="circle"
-          style="background-color: {{ participant.color }}"
-        ></div>
+    <div
+      class="people-grid"
+      [style.grid-template-columns]="'repeat(' + columnsCount() + ', 1fr)'"
+    >
+      @for (participant of participants(); track participant){
+      <div class="person-container" (click)="openSessionParticipantPage()">
+        <img
+          class="profile-pic"
+          [src]="participant.avatar ?? '/files/default.png'"
+        />
         <label>{{ participant.username }}</label>
       </div>
       }
@@ -30,28 +42,23 @@ interface Participant {
   </div>`,
   styles: `
 
-  .carousele{
-    height: 50%;
-    display: flex;
-    gap: 2rem;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: left;
-    margin: auto
+  .people-grid{
+    display: grid;
+    max-width: 100%;
+    max-height: 100%;
+    gap: 5%;
   }
 
   .person-container{
-     transition: transform 0.5s ease;
-     height: 100%;
-  }
-
-  .circle{
-    height: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      aspect-ratio: 1 / 1;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: transform 0.5s ease;
   }
 
   .person-container:hover{
@@ -61,23 +68,65 @@ interface Participant {
   :host{
       display: block;
       width: 100%;
-      height: 200px;
+      height: 100%;
   }`,
 })
 export class SessionParticipantsSectionComponent {
-  Participants: Participant[] = [
-    { id: 0, username: 'test1', color: 'yellow' },
-    { id: 1, username: 'test2', color: 'red' },
-    { id: 2, username: 'test3', color: 'green' },
-    { id: 3, username: 'test4', color: 'blue' },
-    { id: 4, username: 'test5', color: 'brown' },
-  ];
+  private _router = inject(Router);
+  private _containerRef = viewChild<ElementRef>('container');
+  private _userService = inject(UserService);
+  private _activatedRoute = inject(ActivatedRoute);
 
-  openProfile(): void {
-    //open person profile popup
+  participants = signal<Participant[]>([]);
+  columnsCount = signal(4);
+
+  constructor() {
+    effect(() => {
+      const me = this._userService.user();
+      this.participants.set([
+        {
+          id: me?.id!,
+          username: me?.username!,
+          avatar: me?.profileImageUrl,
+        },
+      ]);
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.updateLayout();
+    new ResizeObserver(() => this.updateLayout()).observe(
+      this._containerRef()!.nativeElement
+    );
+  }
+
+  updateLayout() {
+    const container = this._containerRef()!.nativeElement as HTMLElement;
+    const containerAspectRatio = container.clientWidth / container.clientHeight;
+    const count = 8; //this.participants().length;
+
+    if (Number.isNaN(containerAspectRatio)) {
+      setTimeout(() => this.updateLayout(), 100);
+      return;
+    }
+
+    let columns = (() => {
+      switch (true) {
+        case Math.abs(containerAspectRatio - 1) < 0.25:
+          return Math.ceil(Math.sqrt(count));
+        case containerAspectRatio < 1:
+          return Math.ceil(count / 2);
+        default:
+          return Math.ceil(count / 2);
+      }
+    })();
+
+    this.columnsCount.set(columns);
   }
 
   openSessionParticipantPage(): void {
-    //router
+    this._router.navigate(['../participants'], {
+      relativeTo: this._activatedRoute,
+    });
   }
 }

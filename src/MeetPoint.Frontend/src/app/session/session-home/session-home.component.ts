@@ -40,8 +40,12 @@ interface GridCellLayout {
     >
       @for (cell of gridLayout.cells; track cell.id){
       <mat-card
-        [class]="'card-section ' + (isSquare(cell) ? ' square' : '')"
-        [style]="'padding: 25px; maxHeight: ' + getMaxHeight(cell) + ' %'"
+        class="card-section"
+        [style]="
+          'padding: 25px; aspect-ration: 1 / 1; maxHeight: ' +
+          getMaxHeight(cell) +
+          ' %'
+        "
         cdkDrag
         [cdkDragData]="cell"
         [style.gridColumn]="'span ' + (cell.colspan || 1)"
@@ -60,11 +64,6 @@ interface GridCellLayout {
   .grid {
     display: grid;
     gap: 1vw;
-  }
-
-  .square {
-    aspect-ratio: 1 / 1;
-    width: 100%;
   }
 
   .placeholder{
@@ -86,7 +85,6 @@ export class SessionHomeComponent {
       },
       { id: '2', component: SessionParticipantsSectionComponent },
       { id: '3', component: SessionRoutingsSectionComponent },
-      { id: '4', component: SessionParticipantsSectionComponent, colspan: 3 },
     ],
   };
 

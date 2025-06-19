@@ -49,3 +49,14 @@ mat-grid-tile .card-section {
 .clickable:hover {
   color: var(--mat-sys-primary);
 }
+
+.profile-pic {
+  max-height: 100%;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}

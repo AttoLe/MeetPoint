@@ -10,7 +10,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { TimeFrequency } from './shared/time-frequency.component';
+import { SessionHubService } from '../session/session-hub.service';
 
 @Component({
   imports: [
@@ -19,7 +19,6 @@ import { TimeFrequency } from './shared/time-frequency.component';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    TimeFrequency,
   ],
   template: `
     <h2 mat-dialog-title>Join Session</h2>
@@ -39,12 +38,6 @@ import { TimeFrequency } from './shared/time-frequency.component';
             10
           </mat-hint>
         </mat-form-field>
-
-        <update-time-slider
-          [selectedIndex]="1"
-          [control]="timeFrequencyControl"
-        >
-        </update-time-slider>
       </form>
     </mat-dialog-content>
 
@@ -58,6 +51,7 @@ import { TimeFrequency } from './shared/time-frequency.component';
   styles: ``,
 })
 export class JoinSessionDialog {
+  private _sessionHubService = inject(SessionHubService);
   private _dialogRef = inject(MatDialogRef);
   private _router = inject(Router);
 
@@ -76,12 +70,20 @@ export class JoinSessionDialog {
   }
 
   join(): void {
-    //join session, hub with service and signalr
+    var token = this.form.value.token!;
+    this._sessionHubService.checkSessionToken(token).subscribe((isValid) => {
+      console.log('AAAAA');
+      if (isValid) {
+        this._sessionHubService.joinSession(token).subscribe({
+          next: () => {
+            console.log('JOIN');
+            this._router.navigate([`/session`, token]);
+          },
+          error: () => console.log('ERROR'),
+        });
+      }
+    });
 
-    this._dialogRef.close(/*data??*/);
-    this._router.navigate([`/session`, this.form.value.token]);
+    this._dialogRef.close();
   }
 }
-
-//add outline to popup and blur background??
-//set update time as host??

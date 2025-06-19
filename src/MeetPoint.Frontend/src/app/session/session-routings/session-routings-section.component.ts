@@ -9,7 +9,7 @@ import { SectionHeaderComponent } from '../shared/section-header.component';
     <app-section-header title="Routes" (onClick)="openSessionRoutesPage()" />
     <div class="grid">
       @for (route of [1, 2, 3, 4]; track route){
-      <img src="assets/route{{ route }}.png" />
+      <img src="/files/route{{ route }}.png" />
       }
     </div>
   </div>`,

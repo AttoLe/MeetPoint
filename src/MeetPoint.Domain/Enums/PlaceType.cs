@@ -18,7 +18,8 @@ public enum PlaceType
 #nullable disable
 public class SessionSettings
 {
-    public string[] PlaceTypes { get; set; }
+    public string[] placeFilter { get; set; }
+    public bool allow_others_to_propose_places { get; set; }
 }
 
 public class SessionMeta

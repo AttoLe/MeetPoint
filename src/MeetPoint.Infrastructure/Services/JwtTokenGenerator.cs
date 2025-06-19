@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 using MeetPoint.Application.Interfaces;
+using MeetPoint.Infrastructure.Persistence.Entities;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -11,11 +12,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MeetPoint.Infrastructure.Services;
 
-public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGenerator<IdentityUser>
+public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGenerator<ApplicationUser>
 {
     private readonly IConfiguration _configuration = configuration;
 
-    public string GenerateAccessToken(IdentityUser user)
+    public string GenerateAccessToken(ApplicationUser user)
     {
         var claims = new[]
         {

@@ -1,47 +1,42 @@
 import { inject, Injectable } from '@angular/core';
-import * as signalR from '@microsoft/signalr';
-import { AuthTokenService } from '../auth/auth-token.service';
-import { UserService } from '../settings/user.service';
+import { Observable } from 'rxjs';
+import { sessionSettings } from '../home/create-session-dialog.component';
+import { SessionHubConnectionService } from './session-hub-connection';
 
 @Injectable({ providedIn: 'root' })
 export class SessionHubService {
-  private _tokenService = inject(AuthTokenService);
-  private _userService = inject(UserService);
+  private _connectionService = inject(SessionHubConnectionService);
 
-  public connection = new signalR.HubConnectionBuilder()
-    .withUrl(
-      `/hubs/session?userId=${encodeURIComponent(
-        this._userService.user()?.id!
-      )}`,
-      {
-        accessTokenFactory: () => this._tokenService.getAccessToken || '',
-      }
-    )
-    .withAutomaticReconnect()
-    .build();
-
-  startConnection() {
-    return this.connection.start();
+  generateSessionToken(): Observable<string> {
+    return this._connectionService.invoke<string>('GenerateToken');
   }
 
-  generateSessionToken(): string {
-    var uuid = crypto.randomUUID().slice(0, 10);
-    return uuid;
+  checkSessionToken(token: string): Observable<boolean> {
+    return this._connectionService.invoke<boolean>('CheckToken', token);
   }
 
-  createSession(token: string) {
-    this.connection.invoke('CreateSession', token);
+  createSession(
+    token: string,
+    sessionType: string,
+    settings: sessionSettings
+  ): Observable<void> {
+    return this._connectionService.invoke(
+      'CreateSession',
+      token,
+      sessionType,
+      settings
+    );
   }
 
-  deleteSession(token: string) {
-    this.connection.invoke('DeleteSession', token);
+  deleteSession(token: string): Observable<void> {
+    return this._connectionService.invoke('DeleteSession', token);
   }
 
-  joinSession(token: string) {
-    this.connection.invoke('JoinSession', token);
+  joinSession(token: string): Observable<void> {
+    return this._connectionService.invoke('JoinSession', token);
   }
 
-  leaveSession(token: string) {
-    this.connection.invoke('LeaveSession', token);
+  leaveSession(token: string): Observable<void> {
+    return this._connectionService.invoke('LeaveSession', token);
   }
 }

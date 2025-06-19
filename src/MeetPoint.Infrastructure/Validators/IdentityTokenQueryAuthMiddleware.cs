@@ -1,5 +1,7 @@
 using System.Security.Claims;
 
+using MeetPoint.Infrastructure.Persistence.Entities;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +22,8 @@ public class IdentityTokenQueryAuthenticationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var userManager = context.RequestServices.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = context.RequestServices.GetRequiredService<UserManager<ApplicationUser
+        >>();
         if (!context.Request.Path.StartsWithSegments("/hubs"))
         {
             await _next(context);

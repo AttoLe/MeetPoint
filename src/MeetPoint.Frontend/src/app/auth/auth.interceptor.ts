@@ -9,7 +9,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
 
   const tokenService = inject(AuthTokenService);
   const prepare = () => {
-    return tokenService.tokensInvalid()
+    return !tokenService.tokensInvalid()
       ? req.clone({
           setHeaders: {
             Authorization: `Bearer ${tokenService.getAccessToken}`,

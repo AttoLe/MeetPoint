@@ -1,10 +1,12 @@
+using MeetPoint.Infrastructure.Persistence.Entities;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace MeetPoint.Infrastructure.Validators;
 
-public class UserValidator : UserValidator<IdentityUser>
+public class UserValidator : UserValidator<ApplicationUser>
 {
-    public override async Task<IdentityResult> ValidateAsync(UserManager<IdentityUser> manager, IdentityUser user)
+    public override async Task<IdentityResult> ValidateAsync(UserManager<ApplicationUser> manager, ApplicationUser user)
     {
         var baseResult = await base.ValidateAsync(manager, user);
         var errors = baseResult.Succeeded ? [] : baseResult.Errors.ToList();

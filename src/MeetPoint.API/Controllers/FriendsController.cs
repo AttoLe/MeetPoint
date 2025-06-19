@@ -1,35 +1,28 @@
 using MeetPoint.API.DTOs;
 using MeetPoint.Application.Interfaces;
+using MeetPoint.Infrastructure.Cache;
+using MeetPoint.Infrastructure.Persistence.Entities;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MeetPoint.API.Controllers;
 
 [ApiController]
 [Route("api/account/")]
-public class FriendsController(UserManager<IdentityUser> userManager, IFriendsService<string, IdentityUser> friendsService, IFriendInvitationsService<string> friendInvitationsService) : ControllerBase
+public class FriendsController(UserManager<ApplicationUser> userManager, IFriendsService<string, ApplicationUser> friendsService, IFriendInvitationsService<string> friendInvitationsService) : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager = userManager;
-    private readonly IFriendsService<string, IdentityUser> _friendsService = friendsService;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly IFriendsService<string, ApplicationUser> _friendsService = friendsService;
     private readonly IFriendInvitationsService<string> _friendInvitationsService = friendInvitationsService;
 
     //would be there just for now
+
 #nullable disable
-    public record UserDto(string Id, string Email, string Username, string PhoneNumber);
-
-    [Authorize]
-    [HttpGet("meid")]
-    public async Task<IActionResult> GetMeId()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-            return NotFound();
-
-        return Ok(new { id = user.Id });
-    }
+    public record UserDto(string Id, string Email, string Username, string PhoneNumber, string ProfileImageUrl);
 
     [Authorize]
     [HttpGet("me")]
@@ -43,9 +36,28 @@ public class FriendsController(UserManager<IdentityUser> userManager, IFriendsSe
             user.Id,
             user.Email,
             user.UserName,
-            user.PhoneNumber
+            user.PhoneNumber,
+            user.ProfileImageUrl
         ));
     }
+    /*
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            //var user = await _userManager.;
+            /*if (user == null)
+                return NotFound();
+
+            return Ok(new UserDto(
+                user.Id,
+                user.Email,
+                user.UserName,
+                user.PhoneNumber,
+                user.ProfileImageUrl
+            ));
+        }*/
+
 
     public record UpdateDTO(string Username, string PhoneNumber);
 

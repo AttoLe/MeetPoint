@@ -3,8 +3,10 @@ import { AuthGuard } from './auth/auth.guard';
 import { LoginComponent } from './auth/login.component';
 import { RegisterComponent } from './auth/register.component';
 import { HomeComponent } from './home/home.component';
+import { AAAA } from './session/aaa';
 import { SessionHomeComponent } from './session/session-home/session-home.component';
 import { SessionMainComponent } from './session/session-main.component';
+import { PlaceResultListComponent } from './session/session-voting';
 import { SettingsMainComponent } from './settings/settings-main.component';
 
 export const routes: Routes = [
@@ -12,6 +14,11 @@ export const routes: Routes = [
     path: 'login',
     component: LoginComponent,
   },
+  {
+    path: 'aa',
+    component: AAAA,
+  },
+
   {
     path: 'register',
     component: RegisterComponent,
@@ -40,6 +47,10 @@ export const routes: Routes = [
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',
+      },
+      {
+        path: 'voting',
+        component: PlaceResultListComponent,
       },
       {
         path: 'home',

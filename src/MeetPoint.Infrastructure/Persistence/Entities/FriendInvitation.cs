@@ -9,6 +9,6 @@ public class FriendInvitation
     public string ToUserId { get; set; }
     public bool Accepted { get; set; }
 
-    public IdentityUser FromUser { get; set; }
-    public IdentityUser ToUser { get; set; }
+    public ApplicationUser FromUser { get; set; }
+    public ApplicationUser ToUser { get; set; }
 }

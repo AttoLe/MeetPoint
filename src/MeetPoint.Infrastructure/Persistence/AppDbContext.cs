@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MeetPoint.Infrastructure.Persistence;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<UserFriend> UserFriends { get; set; }
     public DbSet<FriendInvitation> FriendInvitations { get; set; }

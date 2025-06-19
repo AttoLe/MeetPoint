@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MeetPoint.Infrastructure.Services;
 
-public class FriendInvitationService(AppDbContext dbContext, IFriendsService<string, IdentityUser> friendsService)
+public class FriendInvitationService(AppDbContext dbContext, IFriendsService<string, ApplicationUser> friendsService)
     : IFriendInvitationsService<string>
 {
     private readonly AppDbContext _db = dbContext;
-    private readonly IFriendsService<string, IdentityUser> _friendsService = friendsService;
+    private readonly IFriendsService<string, ApplicationUser> _friendsService = friendsService;
 
     public async Task<Result> Send(string fromUserId, string toUserId)
     {

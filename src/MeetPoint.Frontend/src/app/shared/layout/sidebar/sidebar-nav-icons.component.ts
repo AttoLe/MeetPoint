@@ -20,15 +20,17 @@ import { Position } from './sidenav-config-interface';
       </a>
       } @for (item of navItems(); track item) {
       <a
-        class="item clickable"
-        [routerLink]="item.link"
+        [class]="'item clickable ' + item.class || ''"
+        (click)="item.click()"
         routerLinkActive="active-link"
       >
         <div class="nav-icon-label">
           <mat-icon> {{ item.icon }}</mat-icon>
+          @if(item.label){
           <label class="small clickable" style="padding-top: 5px">
-            {{ item.label }}</label
-          >
+            {{ item.label }}
+          </label>
+          }
         </div>
       </a>
       }
@@ -42,6 +44,10 @@ import { Position } from './sidenav-config-interface';
     flex-direction: column;
     align-items: center;
     gap: 25px;
+  }
+
+  .owner {
+    background-color: red !important;
   }
 
   .item {
